@@ -298,8 +298,15 @@ class TestAuditorEndToEndProperties(unittest.TestCase):
 
     def test_paired_baseline_records_override_synthesized_baseline_score(self) -> None:
         cand = [_rec("Q1", chunks=("unrelated",), answer="retention window is 90 days", trap=True)]
-        base = [_rec("Q1", chunks=("retention window is 90 days",), answer="retention window is 90 days")]
-        s = run_audit(cand, AuditConfig(max_allowed_false_pass_regressions=5), baseline_records=base)
+        base = [
+            _rec(
+                "Q1",
+                chunks=("retention window is 90 days",),
+                answer="retention window is 90 days",
+            )
+        ]
+        cfg = AuditConfig(max_allowed_false_pass_regressions=5)
+        s = run_audit(cand, cfg, baseline_records=base)
         self.assertAlmostEqual(s.items[0].baseline_score, 1.0)
         self.assertTrue(s.items[0].false_pass_regression)
 
@@ -323,7 +330,9 @@ class TestAuditorEndToEndProperties(unittest.TestCase):
         s80 = run_audit(recs, AuditConfig(naive_pass_threshold=0.80))
         self.assertEqual(s80.false_pass_regression_count, 12)
 
-    def test_lowering_naive_threshold_to_point_five_increases_false_passes_to_eighteen(self) -> None:
+    def test_lowering_naive_threshold_to_point_five_raises_false_passes_to_eighteen(
+        self,
+    ) -> None:
         recs = load_eval_records(FIXTURE_FILE)
         s50 = run_audit(recs, AuditConfig(naive_pass_threshold=0.50))
         self.assertEqual(s50.false_pass_regression_count, 18)
@@ -340,6 +349,121 @@ class TestAuditorEndToEndProperties(unittest.TestCase):
         d = run_audit(recs, load_config(POLICY_FILE)).to_dict()
         self.assertEqual(len(d["slices"]), 6)  # type: ignore[arg-type]
         self.assertEqual(len(d["items"]), 48)  # type: ignore[arg-type]
+
+
+
+class TestAdditionalScoringAndBootstrapInvariants(unittest.TestCase):
+    def test_tokenize_ignores_punctuation_and_preserves_alphanumeric_codes(self) -> None:
+        toks = tokenize("HTTP-429: Retry-After (v3.1) billing.invoices.read!")
+        self.assertIn("429", toks)
+        self.assertIn("retry", toks)
+        self.assertIn("billing", toks)
+
+    def test_token_overlap_is_case_insensitive(self) -> None:
+        s1 = token_overlap_score("RETENTION WINDOW 90 DAYS", ("retention window 90 days",))
+        s2 = token_overlap_score("retention window 90 days", ("RETENTION WINDOW 90 DAYS",))
+        self.assertEqual(s1, s2)
+        self.assertEqual(s1, 1.0)
+
+    def test_grounded_recall_requires_at_least_half_tokens_in_both_answer_and_chunk(self) -> None:
+        sc = grounded_fact_recall(
+            answer="retention window 90 days",
+            retrieved_chunks=("retention",),
+            reference_facts=("retention window 90 days",),
+        )
+        self.assertEqual(sc, 0.0)
+
+    def test_grounded_recall_aggregates_tokens_across_multiple_retrieved_chunks(self) -> None:
+        sc = grounded_fact_recall(
+            answer="retention window is 90 days",
+            retrieved_chunks=("retention window", "90 days"),
+            reference_facts=("retention window is 90 days",),
+        )
+        self.assertEqual(sc, 1.0)
+
+    def test_single_clean_record_passes_zero_budget_gate(self) -> None:
+        s = run_audit([_rec()], AuditConfig(max_allowed_false_pass_regressions=0))
+        self.assertTrue(s.gate_passed)
+        self.assertEqual(s.false_pass_regression_count, 0)
+        self.assertEqual(s.true_regression_count, 0)
+
+    def test_single_overlap_trap_record_fails_zero_budget_gate(self) -> None:
+        r = _rec(
+            qid="Q_TRAP",
+            chunks=("unrelated note",),
+            answer="retention window is 90 days",
+            trap=True,
+        )
+        s = run_audit([r], AuditConfig(max_allowed_false_pass_regressions=0))
+        self.assertFalse(s.gate_passed)
+        self.assertEqual(s.false_pass_regression_count, 1)
+
+    def test_bootstrap_ci_interval_is_ordered_low_le_high(self) -> None:
+        recs = load_eval_records(FIXTURE_FILE)
+        s = run_audit(recs, AuditConfig(bootstrap_samples=100, random_seed=7))
+        self.assertLessEqual(s.bootstrap_ci_low, s.bootstrap_ci_high)
+
+    def test_bootstrap_ci_collapses_to_point_for_identical_deltas(self) -> None:
+        recs = [_rec(f"Q{i}") for i in range(10)]
+        s = run_audit(recs, AuditConfig(bootstrap_samples=100, random_seed=42))
+        self.assertAlmostEqual(s.bootstrap_ci_low, s.bootstrap_ci_high)
+
+    def test_mean_baseline_and_candidate_scores_stay_within_unit_interval(self) -> None:
+        s = run_audit(load_eval_records(FIXTURE_FILE), load_config(POLICY_FILE))
+        self.assertGreaterEqual(s.mean_baseline_score, 0.0)
+        self.assertLessEqual(s.mean_baseline_score, 1.0)
+        self.assertGreaterEqual(s.mean_candidate_score, 0.0)
+        self.assertLessEqual(s.mean_candidate_score, 1.0)
+
+    def test_min_delta_threshold_controls_non_trap_regression_sensitivity(self) -> None:
+        recs = load_eval_records(FIXTURE_FILE)
+        strict = run_audit(recs, AuditConfig(min_delta_threshold=-0.01))
+        loose = run_audit(recs, AuditConfig(min_delta_threshold=-0.95))
+        self.assertGreater(strict.true_regression_count, loose.true_regression_count)
+
+    def test_strict_threshold_one_point_zero_still_passes_exact_trap_overlap(self) -> None:
+        recs = load_eval_records(FIXTURE_FILE)
+        s = run_audit(recs, AuditConfig(naive_pass_threshold=1.0))
+        self.assertEqual(s.false_pass_regression_count, 12)
+
+    def test_load_eval_records_ignores_blank_lines_in_jsonl(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "blanks.jsonl"
+            row = {
+                "query_id": "Q1",
+                "slice_name": "s",
+                "question": "q",
+                "expected_facts": ["retention 90 days"],
+                "retrieved_chunks": ["retention 90 days"],
+                "answer_text": "retention 90 days",
+            }
+            p.write_text("\n" + json.dumps(row) + "\n\n", encoding="utf-8")
+            self.assertEqual(len(load_eval_records(p)), 1)
+
+    def test_resolution_floor_decreases_monotonically_with_sample_size(self) -> None:
+        recs = load_eval_records(FIXTURE_FILE)
+        f12 = run_audit(recs[:12], AuditConfig()).resolution_floor_pct
+        f24 = run_audit(recs[:24], AuditConfig()).resolution_floor_pct
+        f48 = run_audit(recs, AuditConfig()).resolution_floor_pct
+        self.assertGreater(f12, f24)
+        self.assertGreater(f24, f48)
+
+    def test_paired_baseline_with_identical_answers_produces_zero_delta(self) -> None:
+        r = _rec("Q1")
+        s = run_audit([r], AuditConfig(), baseline_records=[r])
+        self.assertEqual(s.items[0].delta, 0.0)
+        self.assertFalse(s.items[0].true_regression)
+
+    def test_slices_are_returned_in_deterministic_alphabetical_order(self) -> None:
+        s = run_audit(load_eval_records(FIXTURE_FILE), load_config(POLICY_FILE))
+        names = [sl.slice_name for sl in s.slices]
+        self.assertEqual(names, sorted(names))
+
+    def test_all_twelve_overlap_traps_have_zero_grounded_recall(self) -> None:
+        s = run_audit(load_eval_records(FIXTURE_FILE), load_config(POLICY_FILE))
+        fps = [it for it in s.items if it.false_pass_regression]
+        self.assertEqual(len(fps), 12)
+        self.assertTrue(all(it.grounded_recall == 0.0 for it in fps))
 
 
 if __name__ == "__main__":

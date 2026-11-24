@@ -1,0 +1,95 @@
+{
+  "metrics": {
+    "tests_total": 76,
+    "tests_passed": true,
+    "coverage_line_pct": 98.61,
+    "total_records": 48,
+    "golden_records": 12,
+    "naive_pass_count": 36,
+    "true_regression_count": 24,
+    "false_pass_regression_count": 12,
+    "caught_by_naive_count": 12,
+    "golden_false_pass_count": 3,
+    "preexisting_broken_count": 2,
+    "mean_overlap_score": 0.7939,
+    "mean_grounded_recall": 0.6042,
+    "full_mean_delta": -0.1183,
+    "resolution_floor_pct": 2.08,
+    "golden_resolution_floor_pct": 8.33,
+    "min_records_for_five_pct": 20,
+    "min_records_for_one_pct": 100,
+    "sweep_050_false_pass": 18,
+    "sweep_080_false_pass": 12
+  },
+  "anchors": {
+    "tests_total": [
+      "{} tests"
+    ],
+    "coverage_line_pct": [
+      "{}% line coverage"
+    ],
+    "total_records": [
+      "{} evaluated records",
+      "{}-query"
+    ],
+    "golden_records": [
+      "{}-query golden",
+      "{} golden queries"
+    ],
+    "naive_pass_count": [
+      "{} naive passes"
+    ],
+    "true_regression_count": [
+      "{} true regressions"
+    ],
+    "false_pass_regression_count": [
+      "{} false-pass regressions"
+    ],
+    "caught_by_naive_count": [
+      "{} caught by naive"
+    ],
+    "golden_false_pass_count": [
+      "{} false passes"
+    ],
+    "preexisting_broken_count": [
+      "{} pre-existing baseline defects"
+    ],
+    "mean_overlap_score": [
+      "{} mean overlap"
+    ],
+    "mean_grounded_recall": [
+      "{} mean grounded recall"
+    ],
+    "full_mean_delta": [
+      "{} mean delta"
+    ],
+    "resolution_floor_pct": [
+      "{}% resolution floor"
+    ],
+    "golden_resolution_floor_pct": [
+      "{}% golden floor"
+    ],
+    "min_records_for_five_pct": [
+      "{} records for 5%"
+    ],
+    "min_records_for_one_pct": [
+      "{} records for 1%"
+    ],
+    "sweep_050_false_pass": [
+      "{} false-pass regressions at 0.50"
+    ],
+    "sweep_080_false_pass": [
+      "{} false-pass regressions at 0.80"
+    ]
+  },
+  "checked_documents": [
+    "README.md",
+    "CHANGELOG.md",
+    "docs/adr/ADR-001-context-grounded-recall-over-lexical-overlap.md",
+    "docs/adr/ADR-002-explicit-three-way-exit-codes.md",
+    "docs/adr/ADR-003-stdlib-zero-dependency-core.md",
+    "docs/adr/ADR-004-separate-preexisting-baseline-defects.md",
+    "docs/adr/ADR-005-offline-boundaries-and-resolution-floor.md"
+  ],
+  "note": "Every value here is produced by running the test suite and experiments."
+}
