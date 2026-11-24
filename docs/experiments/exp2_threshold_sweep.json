@@ -1,0 +1,26 @@
+{
+  "experiment": "threshold_sensitivity_sweep",
+  "rows": [
+    {
+      "naive_pass_threshold": 0.5,
+      "naive_pass_count": 42,
+      "true_regression_count": 24,
+      "false_pass_regression_count": 18,
+      "caught_by_naive_count": 6
+    },
+    {
+      "naive_pass_threshold": 0.65,
+      "naive_pass_count": 36,
+      "true_regression_count": 24,
+      "false_pass_regression_count": 12,
+      "caught_by_naive_count": 12
+    },
+    {
+      "naive_pass_threshold": 0.8,
+      "naive_pass_count": 31,
+      "true_regression_count": 24,
+      "false_pass_regression_count": 12,
+      "caught_by_naive_count": 12
+    }
+  ]
+}

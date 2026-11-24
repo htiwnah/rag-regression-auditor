@@ -1,0 +1,59 @@
+{
+  "experiment": "slice_regression_breakdown",
+  "slices": [
+    {
+      "slice_name": "api_contracts",
+      "record_count": 8,
+      "naive_pass_count": 7,
+      "true_regression_count": 3,
+      "false_pass_count": 2,
+      "mean_grounded_recall": 0.6875,
+      "mean_delta": -0.1028
+    },
+    {
+      "slice_name": "auth_scopes",
+      "record_count": 8,
+      "naive_pass_count": 7,
+      "true_regression_count": 3,
+      "false_pass_count": 2,
+      "mean_grounded_recall": 0.6875,
+      "mean_delta": -0.0754
+    },
+    {
+      "slice_name": "incident_triage",
+      "record_count": 8,
+      "naive_pass_count": 2,
+      "true_regression_count": 8,
+      "false_pass_count": 2,
+      "mean_grounded_recall": 0.3125,
+      "mean_delta": -0.3134
+    },
+    {
+      "slice_name": "policy_lookup",
+      "record_count": 8,
+      "naive_pass_count": 7,
+      "true_regression_count": 3,
+      "false_pass_count": 2,
+      "mean_grounded_recall": 0.6875,
+      "mean_delta": -0.0724
+    },
+    {
+      "slice_name": "runbook_steps",
+      "record_count": 8,
+      "naive_pass_count": 6,
+      "true_regression_count": 4,
+      "false_pass_count": 2,
+      "mean_grounded_recall": 0.5625,
+      "mean_delta": -0.0731
+    },
+    {
+      "slice_name": "schema_migrations",
+      "record_count": 8,
+      "naive_pass_count": 7,
+      "true_regression_count": 3,
+      "false_pass_count": 2,
+      "mean_grounded_recall": 0.6875,
+      "mean_delta": -0.0724
+    }
+  ]
+}

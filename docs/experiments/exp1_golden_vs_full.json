@@ -1,0 +1,20 @@
+{
+  "experiment": "golden_subset_vs_full_corpus",
+  "golden_records": 12,
+  "full_records": 48,
+  "golden_naive_pass_count": 10,
+  "full_naive_pass_count": 36,
+  "golden_false_pass_count": 3,
+  "full_false_pass_count": 12,
+  "full_true_regression_count": 24,
+  "full_caught_by_naive_count": 12,
+  "preexisting_broken_count": 2,
+  "mean_overlap_score": 0.7939,
+  "mean_grounded_recall": 0.6042,
+  "golden_mean_delta": -0.0779,
+  "full_mean_delta": -0.1183,
+  "bootstrap_ci_low": -0.1661,
+  "bootstrap_ci_high": -0.0659,
+  "golden_resolution_floor_pct": 8.33,
+  "full_resolution_floor_pct": 2.08
+}
