@@ -2,7 +2,7 @@
 
 <img src="docs/banner.svg" alt="rag-regression-auditor banner" width="1200" height="280">
 
-[![CI](https://github.com/htiwnah/rag-regression-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/htiwnah/rag-regression-auditor/actions/workflows/ci.yml)
+
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
