@@ -1,0 +1,12 @@
+{
+  "policy_version": "1.0",
+  "rationale": "Reject candidate RAG changes whenever lexical overlap hides ungrounded recall drops.",
+  "naive_pass_threshold": 0.65,
+  "min_delta_threshold": -0.05,
+  "max_allowed_false_pass_regressions": 0,
+  "bootstrap_samples": 400,
+  "random_seed": 42,
+  "golden_set_size": 12,
+  "fixture_path": "fixtures/rag_eval_corpus.jsonl",
+  "report_out_path": "reports/rag_audit_report.json"
+}

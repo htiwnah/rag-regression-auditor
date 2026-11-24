@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-regression-auditor"
+version = "1.0.0"
+description = "Deterministic offline RAG regression and false-pass threshold auditor"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Sai Hanwith Bellamkonda", email = "saihanwith.b@mycvcareer.com"}
+]
+dependencies = []
+
+[project.scripts]
+rag-audit = "rag_regression_auditor.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
