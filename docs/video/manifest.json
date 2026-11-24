@@ -1,0 +1,14 @@
+{
+  "title": "rag-regression-auditor terminal replay",
+  "gif": "docs/video/demo.gif",
+  "commands": [
+    {
+      "cmd": "rag-audit audit --fixture fixtures/rag_eval_corpus.jsonl --policy policy/rag_audit_policy.json",
+      "exit_code": 1
+    },
+    {
+      "cmd": "python3 experiments/run_experiments.py && python3 tools/check_numbers.py",
+      "exit_code": 0
+    }
+  ]
+}

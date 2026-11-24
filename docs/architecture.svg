@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="330" viewBox="0 0 1140 330">
+  <rect width="1140" height="330" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="32" y="34" fill="#0f172a" font-family="sans-serif" font-size="16" font-weight="bold">rag-regression-auditor Pipeline Architecture (Offline &amp; Deterministic)</text>
+
+  <rect x="28" y="56" width="252" height="236" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="1.5"/>
+  <text x="46" y="90" fill="#0f172a" font-family="sans-serif" font-size="16" font-weight="bold">1. Offline Corpus</text>
+  <text x="46" y="122" fill="#334155" font-family="monospace" font-size="13">48 queries across 6 slices</text>
+  <text x="46" y="148" fill="#334155" font-family="monospace" font-size="13">12 lexical overlap traps</text>
+  <text x="46" y="174" fill="#334155" font-family="monospace" font-size="13">2 pre-existing defects</text>
+  <text x="46" y="206" fill="#475569" font-family="monospace" font-size="12">Zero API keys or network</text>
+
+  <line x1="280" y1="174" x2="326" y2="174" stroke="#0284c7" stroke-width="2.5"/>
+  <polygon points="326,168 338,174 326,180" fill="#0284c7"/>
+
+  <rect x="338" y="56" width="372" height="236" rx="10" fill="#eff6ff" stroke="#0284c7" stroke-width="1.5"/>
+  <text x="356" y="90" fill="#0f172a" font-family="sans-serif" font-size="16" font-weight="bold">2. Dual-Signal Audit Engine</text>
+  <text x="356" y="122" fill="#1e293b" font-family="monospace" font-size="13">Naive lexical token overlap</text>
+  <text x="356" y="148" fill="#b91c1c" font-family="monospace" font-size="13">Context-grounded fact recall</text>
+  <text x="356" y="174" fill="#1e293b" font-family="monospace" font-size="13">Seeded 400x bootstrap 95% CI</text>
+  <text x="356" y="200" fill="#1e293b" font-family="monospace" font-size="13">1/N resolution floor check</text>
+  <text x="356" y="232" fill="#334155" font-family="monospace" font-size="12">Per-slice false-pass rollup</text>
+
+  <line x1="710" y1="174" x2="756" y2="174" stroke="#15803d" stroke-width="2.5"/>
+  <polygon points="756,168 768,174 756,180" fill="#15803d"/>
+
+  <rect x="768" y="56" width="344" height="236" rx="10" fill="#f0fdf4" stroke="#15803d" stroke-width="1.5"/>
+  <text x="786" y="90" fill="#0f172a" font-family="sans-serif" font-size="16" font-weight="bold">3. Gate, Receipts &amp; CI</text>
+  <text x="786" y="122" fill="#1e293b" font-family="monospace" font-size="13">Exit 0=pass, 1=block, 2=err</text>
+  <text x="786" y="148" fill="#1e293b" font-family="monospace" font-size="13">docs/metrics.json receipts</text>
+  <text x="786" y="174" fill="#1e293b" font-family="monospace" font-size="13">Anchor-verified prose check</text>
+  <text x="786" y="200" fill="#1e293b" font-family="monospace" font-size="13">Interactive HTML explorer</text>
+  <text x="786" y="232" fill="#334155" font-family="monospace" font-size="12">Python 3.10/3.11/3.12 CI</text>
+</svg>

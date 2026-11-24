@@ -1,0 +1,14 @@
+{
+  "screenshots": [
+    {
+      "file": "docs/screenshots/01_rag_audit_terminal.png",
+      "command": "rag-audit audit --fixture fixtures/rag_eval_corpus.jsonl --policy policy/rag_audit_policy.json",
+      "exit_code": 1
+    },
+    {
+      "file": "docs/screenshots/02_experiments_receipts.png",
+      "command": "python3 experiments/run_experiments.py && python3 tools/check_numbers.py",
+      "exit_code": 0
+    }
+  ]
+}
